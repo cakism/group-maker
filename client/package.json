@@ -19,5 +19,11 @@
     "@types/react": "^16.4.18",
     "@types/react-dom": "^16.0.9",
     "typescript": "^3.1.4"
+  },
+  "proxy": { //For development purposes
+    "/api": {
+      "target": "http://localhost:8080",
+      "ws": true
+    }
   }
 }
