@@ -1,6 +1,6 @@
 import Person from "./Person";
 
 export default interface Group {
-    id: Number,
+    id: number,
     people: Person[]
 }

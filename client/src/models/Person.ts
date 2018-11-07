@@ -1,6 +1,6 @@
 export default interface Person {
-    id: Number,
-    name: String,
+    id: number,
+    name: string,
     gender: Gender,
     likes: Person[],
     dislikes: Person[]
