@@ -7,6 +7,6 @@ import Group from "./Group";
 export default interface Crowd {
     id: number,
     name: string,
-    ungroupedPeople: Person[],
+    people: Array<[Person, Group]>,
     groups: Group[]
 }
