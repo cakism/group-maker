@@ -22,7 +22,7 @@ export function reducer(state: State = initialState, action: Action) {
             return {
                 ...state,
                 groups: state.crowd.groups.map(group => group.id === groupId ? {
-                    ...group,
+                    ...group, //Spread operator to deconstruct group obj and create new copy with added person
                     people: [...group.people, person]
                 } : group)
 
