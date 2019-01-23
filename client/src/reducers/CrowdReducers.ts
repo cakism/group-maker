@@ -63,7 +63,7 @@ export function reducer(state: State = initialState, action: Action) {
             const {groupId} = action.payload;
             const {personId} = action.payload;
 
-            const newGroup = state.crowd.groups.find(x => x.id === groupId) as Group;
+            const newGroup = state.crowd.groups.find(x => x.id === groupId) as Group; // Same as ! operator, disregards null possibility
 
             //Add person with new group to state
             return {
@@ -82,7 +82,61 @@ export function reducer(state: State = initialState, action: Action) {
                 ...state,
                 people: state.crowd.people.map(person => person.id === personId ? {
                     ...person, group: undefined
-                }: person)
+                } : person)
+            }
+        }
+
+        case ActionTypes.ADD_FRIEND: {
+            const {personId} = action.payload;
+            const {friendId} = action.payload;
+
+            let updatedPeople = addFriendOrEnemy(state.crowd.people, personId, friendId, PersonType.FRIEND);
+            updatedPeople = addFriendOrEnemy(updatedPeople, friendId, personId, PersonType.FRIEND);
+
+            return {
+                ...state,
+                people: updatedPeople
+            }
+
+
+        }
+
+        case ActionTypes.REMOVE_FRIEND: {
+            const {personId} = action.payload;
+            const {friendId} = action.payload;
+
+            let updatedPeople = removeFriendOrEnemy(state.crowd.people, personId, friendId, PersonType.FRIEND)
+            updatedPeople = removeFriendOrEnemy(updatedPeople, friendId, personId, PersonType.FRIEND);
+
+            return {
+                ...state,
+                people: updatedPeople
+            }
+        }
+
+        case ActionTypes.ADD_ENEMY: {
+            const {personId} = action.payload;
+            const {enemyId} = action.payload;
+
+            let updatedPeople = addFriendOrEnemy(state.crowd.people, personId, enemyId, PersonType.ENEMY);
+            updatedPeople = addFriendOrEnemy(updatedPeople, enemyId, personId, PersonType.ENEMY);
+
+            return {
+                ...state,
+                people: updatedPeople
+            }
+        }
+
+        case ActionTypes.REMOVE_ENEMY: {
+            const {personId} = action.payload;
+            const {enemyId} = action.payload;
+
+            let updatedPeople = removeFriendOrEnemy(state.crowd.people, personId, enemyId, PersonType.ENEMY)
+            updatedPeople = removeFriendOrEnemy(updatedPeople, enemyId, personId, PersonType.ENEMY);
+
+            return {
+                ...state,
+                people: updatedPeople
             }
         }
 
@@ -92,10 +146,32 @@ export function reducer(state: State = initialState, action: Action) {
     }
 }
 
-/*
-groups: state.crowd.groups.map(group => group.id === groupId ? {
-    ...group,
-    people: [...group.people, person]
-} : group),
+enum PersonType {FRIEND, ENEMY}
 
-*/
+function addFriendOrEnemy(people: Person[], personId: number, friendId: number, personType: PersonType) {
+    const personIndex = people.findIndex(p => p.id === personId);
+    const friend = people.find(p => p.id === friendId) as Person;
+    if (friend === undefined || personIndex === -1) {
+        throw new Error("Looks like you tried to add a friend that wasnt in the list of friends")
+    }
+    personType === PersonType.FRIEND ?
+        people[personIndex].likes.push(friend)
+        : people[personIndex].dislikes.push(friend);
+
+    return people;
+}
+
+function removeFriendOrEnemy(people: Person[], personId: number, friendId: number, personType: PersonType) {
+    const personIndex = people.findIndex(p => p.id === personId);
+    const friendIndex = personType === PersonType.FRIEND ?
+        people[personIndex].likes.findIndex(p => p.id === friendId)
+        : people[personIndex].dislikes.findIndex(p => p.id === friendId);
+    if (friendIndex === -1 || personIndex === -1) {
+        throw new Error("Looks like you tried to remove a friend that wasnt in the list of friends")
+    }
+    personType === PersonType.FRIEND ?
+        people[personIndex].likes.splice(friendIndex, 1)
+        : people[personIndex].dislikes.splice(friendIndex, 1);
+
+    return people;
+}
