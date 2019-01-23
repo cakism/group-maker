@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/react-redux": "^7.0.0",
+    "@types/redux-logger": "^3.0.6",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-scripts-ts": "^4.0.8",

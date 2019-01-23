@@ -28,6 +28,7 @@
 
 # dependencies
 /client/node_modules
+/client/package-lock.json
 
 # testing
 /client/coverage

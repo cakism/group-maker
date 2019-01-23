@@ -1,9 +1,12 @@
+import Group from "./Group";
+
 export default interface Person {
     id: number,
     name: string,
     gender: Gender,
     likes: Person[],
-    dislikes: Person[]
+    dislikes: Person[],
+    group?: Group
 
 }
 
